@@ -391,23 +391,65 @@ function copyText(id, btn){
   }).catch(()=>{ alert('Copie impossible dans ce navigateur ; sélectionnez et copiez manuellement le texte.'); });
 }
 
+const CYIM_LOGO_B64 = "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";
+
+const CYIM_FOOTER_LINES = [
+  { text: "46D Rue Louis Kerautret Botmel 35000 Rennes - France", bold: true },
+  { text: "Tél : +33 (0)2 99 22 83 40 \u2013 www.cyim.com", bold: true },
+  { text: "S.A.S au capital de 120 000 Euros - 439 038 910 RCS Rennes - Siret : 439 038 910 00030 - Code APE : 6201Z - TVA : FR 11 439 038 910" },
+  { text: "Tout litige rel\u00e8vera de la comp\u00e9tence du tribunal de commerce de Rennes. A l'exception de tout autre.", italics: true },
+];
+
+function cyimRun(text, opts){
+  opts = opts || {};
+  return new window.docx.TextRun(Object.assign({ text: text, font: "Aptos", size: 22 }, opts));
+}
+
+function cyimHeader(){
+  const { Header, Paragraph, ImageRun, AlignmentType, BorderStyle } = window.docx;
+  const bytes = Uint8Array.from(atob(CYIM_LOGO_B64), c => c.charCodeAt(0));
+  return new Header({
+    children: [
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "DCE3E6", space: 8 } },
+        children: [ new ImageRun({ data: bytes, transformation: { width: 120, height: 40 }, type: "png" }) ],
+      }),
+    ],
+  });
+}
+
+function cyimFooter(){
+  const { Footer, Paragraph, AlignmentType } = window.docx;
+  return new Footer({
+    children: CYIM_FOOTER_LINES.map(line => new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [ cyimRun(line.text, { bold: !!line.bold, italics: !!line.italics, size: 16 }) ],
+    })),
+  });
+}
+
 async function downloadSimpleDocx(title, bodyText, filename){
   if(!window.docx){
     alert("La librairie de génération Word n'a pas pu se charger (connexion internet nécessaire au premier chargement de la page). Utilisez le bouton « Copier le texte » à la place.");
     return;
   }
-  const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = window.docx;
+  const { Document, Packer, Paragraph, AlignmentType } = window.docx;
   const paragraphs = [
-    new Paragraph({ text: title, heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER, spacing:{after:300} })
+    new Paragraph({ text:"", spacing:{after:200} }),
+    new Paragraph({ alignment: AlignmentType.CENTER, children:[ cyimRun(title, { bold:true, size: 28 }) ], spacing:{after:300} })
   ];
   bodyText.split('\n').forEach(line=>{
     if(line.trim()===''){
       paragraphs.push(new Paragraph({ text:'' }));
     } else {
-      paragraphs.push(new Paragraph({ children:[ new TextRun(line) ], spacing:{after:120} }));
+      paragraphs.push(new Paragraph({ children:[ cyimRun(line) ], spacing:{after:120} }));
     }
   });
-  const doc = new Document({ sections: [{ properties:{}, children: paragraphs }] });
+  const doc = new Document({
+    styles: { default: { document: { run: { font: "Aptos", size: 22 } } } },
+    sections: [{ headers: { default: cyimHeader() }, footers: { default: cyimFooter() }, properties:{}, children: paragraphs }]
+  });
   const blob = await Packer.toBlob(doc);
   saveBlob(blob, filename);
 }
@@ -492,7 +534,7 @@ function det_screenWrap(eyebrow,title,sub,bodyHtml){
     <h2>${title}</h2>
     <p class="panel-sub">${sub}</p>
     ${bodyHtml}
-    <footer class="appfoot">Outil interne CYIM — reprend la note « Détachement du personnel à l'étranger » (v2). Les liens ouvrent les sites officiels dans un nouvel onglet ; aucune donnée saisie ici n'est transmise à un serveur, tout reste dans votre navigateur (localStorage).</footer>
+    <footer class="appfoot">Outil interne CYIM — reprend la note « Détachement du personnel à l'étranger » (v2). Les liens ouvrent les sites officiels dans un nouvel onglet ; aucune donnée saisie ici n'est transmise à un serveur, tout reste dans votre navigateur (localStorage).<br>Dernière mise à jour : juillet 2026.</footer>
   </main>`;
 }
 
@@ -550,17 +592,20 @@ det.render3 = function(){
     `<div class="card">
       <div class="field-row">
         <div class="field"><label class="field-label">Nom et prénom du salarié</label><input type="text" id="d_nom" value="${s.nomSalarie}"></div>
+        <div class="field"><label class="field-label">Email du salarié (facultatif)</label><input type="text" id="d_email" value="${s.email||''}" placeholder="prenom.nom@cyim.com"></div>
+      </div>
+      <div class="field-row">
         <div class="field"><label class="field-label">Poste occupé</label><input type="text" id="d_poste" value="${s.poste}"></div>
-      </div>
-      <div class="field-row">
         <div class="field"><label class="field-label">Client / congrès</label><input type="text" id="d_client" value="${s.client}"></div>
-        <div class="field"><label class="field-label">Ville de la mission</label><input type="text" id="d_ville" value="${s.ville}"></div>
       </div>
       <div class="field-row">
+        <div class="field"><label class="field-label">Ville de la mission</label><input type="text" id="d_ville" value="${s.ville}"></div>
         <div class="field"><label class="field-label">Date de début</label><input type="date" id="d_debut" value="${s.dateDebut}"></div>
-        <div class="field"><label class="field-label">Date de fin</label><input type="date" id="d_fin" value="${s.dateFin}"></div>
       </div>
-      <div class="field"><label class="field-label">N° de certificat A1 (une fois obtenu — facultatif)</label><input type="text" id="d_a1" value="${s.numeroA1}" placeholder="À compléter une fois délivré par l'Urssaf"></div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Date de fin</label><input type="date" id="d_fin" value="${s.dateFin}"></div>
+        <div class="field"><label class="field-label">N° de certificat A1 (facultatif)</label><input type="text" id="d_a1" value="${s.numeroA1}" placeholder="À compléter une fois délivré"></div>
+      </div>
     </div>
      <div class="btn-row"><button class="btn secondary" onclick="det.goTo(2)">Retour</button><button class="btn" onclick="det_collectAndGo(4)">Voir les démarches et générer les documents</button></div>`
   );
@@ -569,6 +614,7 @@ det.render3 = function(){
 function det_collectAndGo(step){
   const s = det.state;
   s.nomSalarie = document.getElementById('d_nom').value;
+  s.email = document.getElementById('d_email').value;
   s.poste = document.getElementById('d_poste').value;
   s.client = document.getElementById('d_client').value;
   s.ville = document.getElementById('d_ville').value;
@@ -668,6 +714,26 @@ det.render4 = function(){
   );
 };
 
+function splitMail(text){
+  const idx = text.indexOf('\n');
+  const firstLine = text.slice(0, idx);
+  const subject = firstLine.replace(/^Objet\s*:\s*/, '');
+  const body = text.slice(idx+1).replace(/^\n+/, '');
+  return { subject, body };
+}
+
+function openInOutlook(toEmail, subject, body){
+  const params = new URLSearchParams();
+  params.set('subject', subject);
+  params.set('body', body);
+  const mailto = `mailto:${toEmail||''}?${params.toString().replace(/\+/g, '%20')}`;
+  if(mailto.length > 1900){
+    alert("Le message est trop long pour s'ouvrir automatiquement dans Outlook (limite technique des liens mailto). Utilisez « Copier le texte » et collez-le dans un nouveau mail.");
+    return;
+  }
+  window.location.href = mailto;
+}
+
 function det_renderDocGenerators(){
   return `
     <div class="card">
@@ -683,6 +749,7 @@ function det_renderDocGenerators(){
       <div class="doc-header"><h3>Mail au salarié</h3>
         <div class="doc-actions">
           <button class="btn secondary" onclick="copyText('det-doc-mail', this)">Copier le texte</button>
+          <button class="btn secondary" onclick="const m=splitMail(document.getElementById('det-doc-mail').value); openInOutlook('${det.state.email||''}', m.subject, m.body);">Ouvrir dans Outlook</button>
           <button class="btn" onclick="downloadSimpleDocx('MAIL — Certificat A1', document.getElementById('det-doc-mail').value, 'Mail_A1_${(det.state.nomSalarie||'salarie').replace(/\\s+/g,'_')}.docx')">Télécharger en .docx</button>
         </div>
       </div>
@@ -835,7 +902,7 @@ function tt_screenWrap(eyebrow,title,sub,bodyHtml){
     <h2>${title}</h2>
     <p class="panel-sub">${sub}</p>
     ${bodyHtml}
-    <footer class="appfoot">Outil interne CYIM — reprend la note « Télétravail hors France » et son annexe pays. Réservé aux salariés de CYIM (le télétravail des intermittents et auto-entrepreneurs n'est pas couvert par ce module). Le télétravail ne nécessite jamais de déclaration SIPSI/Limosa (réservée à l'exécution d'une prestation pour un client local).</footer>
+    <footer class="appfoot">Outil interne CYIM — reprend la note « Télétravail hors France » et son annexe pays. Réservé aux salariés de CYIM (le télétravail des intermittents et auto-entrepreneurs n'est pas couvert par ce module). Le télétravail ne nécessite jamais de déclaration SIPSI/Limosa (réservée à l'exécution d'une prestation pour un client local).<br>Dernière mise à jour : juillet 2026.</footer>
   </main>`;
 }
 
@@ -898,13 +965,16 @@ tt.render2 = function(){
     `<div class="card">
       <div class="field-row">
         <div class="field"><label class="field-label">Nom et prénom du salarié</label><input type="text" id="t_nom" value="${s.nomSalarie}"></div>
-        <div class="field"><label class="field-label">Poste occupé</label><input type="text" id="t_poste" value="${s.poste}"></div>
+        <div class="field"><label class="field-label">Email du salarié (facultatif)</label><input type="text" id="t_email" value="${s.email||''}" placeholder="prenom.nom@cyim.com"></div>
       </div>
       <div class="field-row">
+        <div class="field"><label class="field-label">Poste occupé</label><input type="text" id="t_poste" value="${s.poste}"></div>
         <div class="field"><label class="field-label">Date de début</label><input type="date" id="t_debut" value="${s.dateDebut}"></div>
-        <div class="field"><label class="field-label">Date de fin</label><input type="date" id="t_fin" value="${s.dateFin}"></div>
       </div>
-      <div class="field"><label class="field-label">N° de certificat (une fois obtenu — facultatif)</label><input type="text" id="t_a1" value="${s.numeroA1}"></div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Date de fin</label><input type="date" id="t_fin" value="${s.dateFin}"></div>
+        <div class="field"><label class="field-label">N° de certificat (facultatif)</label><input type="text" id="t_a1" value="${s.numeroA1}"></div>
+      </div>
     </div>
      <div class="btn-row"><button class="btn secondary" onclick="tt.goTo(1)">Retour</button><button class="btn" onclick="tt_collectAndGo(3)">Voir les démarches et générer les documents</button></div>`
   );
@@ -913,6 +983,7 @@ tt.render2 = function(){
 function tt_collectAndGo(step){
   const s = tt.state;
   s.nomSalarie = document.getElementById('t_nom').value;
+  s.email = document.getElementById('t_email').value;
   s.poste = document.getElementById('t_poste').value;
   s.dateDebut = document.getElementById('t_debut').value;
   s.dateFin = document.getElementById('t_fin').value;
@@ -981,6 +1052,7 @@ function tt_renderDocGenerators(){
       <div class="doc-header"><h3>Mail au salarié</h3>
         <div class="doc-actions">
           <button class="btn secondary" onclick="copyText('tt-doc-mail', this)">Copier le texte</button>
+          <button class="btn secondary" onclick="const m=splitMail(document.getElementById('tt-doc-mail').value); openInOutlook('${tt.state.email||''}', m.subject, m.body);">Ouvrir dans Outlook</button>
           <button class="btn" onclick="downloadSimpleDocx('MAIL — Télétravail à l\'étranger', document.getElementById('tt-doc-mail').value, 'Mail_teletravail_${(tt.state.nomSalarie||'salarie').replace(/\s+/g,'_')}.docx')">Télécharger en .docx</button>
         </div>
       </div>
@@ -1083,7 +1155,7 @@ function renderHistorique(){
       </div>
     </div>
     <div class="card" style="padding:0; overflow-x:auto;">${tableOrEmpty}</div>
-    <footer class="appfoot">L'export Excel reprend, pour chaque mission validée, le détail des démarches et leur statut (fait / à faire), pour une traçabilité complète par salarié.</footer>
+    <footer class="appfoot">L'export Excel reprend, pour chaque mission validée, le détail des démarches et leur statut (fait / à faire), pour une traçabilité complète par salarié.<br>Dernière mise à jour : juillet 2026.</footer>
   </main>`;
 }
 
@@ -1182,7 +1254,7 @@ function renderDocumentation(){
     <h2>Comprendre le détachement et le télétravail</h2>
     <p class="panel-sub">Rappels issus des notes de synthèse CYIM. Cliquez sur une question pour la déplier.</p>
     ${html}
-    <footer class="appfoot">Pour le détail juridique complet, les modèles et la cartographie exhaustive par pays, se référer aux notes de synthèse « Détachement du personnel à l'étranger » et « Télétravail hors France ».</footer>
+    <footer class="appfoot">Pour le détail juridique complet, les modèles et la cartographie exhaustive par pays, se référer aux notes de synthèse « Détachement du personnel à l'étranger » et « Télétravail hors France ».<br>Dernière mise à jour : juillet 2026.</footer>
   </main>`;
 }
 
