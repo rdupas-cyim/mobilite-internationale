@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYIM — Mobilité internationale</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMzMEREOTIiLz4KICA8IS0tIHBvaWduw6llIC0tPgogIDxwYXRoIGQ9Ik0gMjEgMjQgTCAyMSAyMCBRIDIxIDE3IDI0IDE3IEwgNDAgMTcgUSA0MyAxNyA0MyAyMCBMIDQzIDI0IgogICAgICAgIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFFNEU2NiIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gY29ycHMgZGUgbGEgdmFsaXNlIC0tPgogIDxyZWN0IHg9IjE0IiB5PSIyNCIgd2lkdGg9IjM2IiBoZWlnaHQ9IjIyIiByeD0iNCIgZmlsbD0iIzFFNEU2NiIvPgogIDwhLS0gY2VpbnR1cmUgLS0+CiAgPHJlY3QgeD0iMTQiIHk9IjMzIiB3aWR0aD0iMzYiIGhlaWdodD0iNCIgZmlsbD0iI0ZGRkZGRiIvPgogIDwhLS0gZmVybW9pciAtLT4KICA8cmVjdCB4PSIyOSIgeT0iMzIuNSIgd2lkdGg9IjYiIGhlaWdodD0iNSIgcng9IjEiIGZpbGw9IiMzMEREOTIiIHN0cm9rZT0iIzFFNEU2NiIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPgo=">
+<script src="https://unpkg.com/docx@9.7.1/dist/index.umd.cjs"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --navy:#1E4E66;
+    --navy-dark:#123344;
+    --mint:#30DD92;
+    --mint-dark:#1FA870;
+    --bg:#F4F6F7;
+    --panel:#FFFFFF;
+    --ink:#1A2327;
+    --muted:#5B6B72;
+    --line:#DCE3E6;
+    --amber:#C97B15;
+    --amber-bg:#FCF1E0;
+    --red:#B3261E;
+    --red-bg:#FBEAE9;
+    --green-bg:#E9FBF3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:Aptos, "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif;
+    line-height:1.5;
+  }
+
+  /* ---- Top bar ---- */
+  .topbar{
+    background:var(--navy-dark);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:28px;
+    padding:0 24px;
+    height:56px;
+    position:sticky; top:0; z-index:50;
+  }
+  .topbar .brand{display:flex; align-items:center; gap:10px; flex:none;}
+  .topbar .brand-mark{width:12px;height:12px;border-radius:50%;background:var(--mint);}
+  .topbar .brand-name{font-weight:700; font-size:14px; letter-spacing:.02em;}
+  .tabnav{display:flex; gap:4px; flex:1; overflow-x:auto;}
+  .tabnav button{
+    background:transparent; border:none; color:#B9CFDA;
+    padding:10px 16px; font-size:13.5px; font-weight:700;
+    cursor:pointer; border-radius:8px 8px 0 0; font-family:inherit;
+    white-space:nowrap;
+  }
+  .tabnav button:hover{color:#fff; background:rgba(255,255,255,0.06);}
+  .tabnav button.active{color:var(--navy-dark); background:var(--mint);}
+
+  .app{
+    display:grid;
+    grid-template-columns: 300px 1fr;
+    min-height:calc(100vh - 56px);
+  }
+  .app.full{grid-template-columns: 1fr;}
+  @media (max-width: 880px){
+    .app{grid-template-columns: 1fr;}
+    .rail{position:static;}
+  }
+
+  /* ---- Rail ---- */
+  .rail{
+    background:var(--navy);
+    color:#fff;
+    padding:28px 24px;
+    position:sticky;
+    top:56px;
+    align-self:start;
+    min-height:calc(100vh - 56px);
+  }
+  .rail h1{ font-size:19px; line-height:1.25; margin:0 0 4px; font-weight:700;}
+  .rail p.sub{ font-size:13px; color:#CFE0E8; margin:0 0 24px;}
+  .steps{list-style:none; margin:0; padding:0;}
+  .steps li{
+    display:flex; gap:12px; align-items:flex-start; padding:11px 0;
+    border-top:1px solid rgba(255,255,255,0.12); font-size:13.5px; color:#B9CFDA;
+  }
+  .steps li:first-child{border-top:none;}
+  .steps li.active{color:#fff;}
+  .steps li.done{color:#CFF6E3;}
+  .step-num{
+    width:22px;height:22px;border-radius:50%; border:1.5px solid #6E93A5;
+    display:flex;align-items:center;justify-content:center; font-size:11px; font-weight:700;
+    flex:none; color:#B9CFDA;
+  }
+  .steps li.active .step-num{border-color:var(--mint); background:var(--mint); color:var(--navy-dark);}
+  .steps li.done .step-num{border-color:var(--mint); color:var(--mint);}
+  .verdict-box{margin-top:24px; padding:14px; border-radius:10px; background:rgba(255,255,255,0.08); font-size:13px;}
+  .verdict-box .label{text-transform:uppercase; letter-spacing:.06em; font-size:11px; color:#9FC0CF; margin-bottom:6px;}
+  .verdict-pill{display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:12px;}
+  .verdict-pill.pending{background:#3A6377; color:#D9E8EE;}
+  .verdict-pill.oui{background:var(--mint); color:var(--navy-dark);}
+  .verdict-pill.non{background:#E4E9EA; color:var(--navy-dark);}
+  .verdict-pill.grise{background:#E8B85B; color:#3A2A00;}
+  .switch-box{
+    margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.15);
+    font-size:12.5px; color:#B9CFDA;
+  }
+  .switch-box button{
+    margin-top:8px; width:100%; background:rgba(255,255,255,0.1); color:#fff;
+    border:1px solid rgba(255,255,255,0.25); padding:8px 10px; border-radius:8px;
+    font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .switch-box button:hover{background:rgba(255,255,255,0.2);}
+
+  /* ---- Main ---- */
+  main{padding:36px 48px; max-width:920px;}
+  @media (max-width:880px){ main{padding:22px;} }
+  .eyebrow{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--mint-dark); font-weight:700; margin-bottom:8px;}
+  h2{font-size:25px; margin:0 0 6px; color:var(--navy-dark);}
+  .panel-sub{color:var(--muted); margin:0 0 24px; font-size:14.5px;}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; margin-bottom:16px;}
+  .option-grid{display:flex; flex-direction:column; gap:10px;}
+  .option{display:flex; align-items:flex-start; gap:14px; border:1.5px solid var(--line); border-radius:10px; padding:15px; cursor:pointer; transition:border-color .15s, background .15s; background:#fff;}
+  .option:hover{border-color:var(--mint);}
+  .option.selected{border-color:var(--navy); background:#EFF5F7;}
+  .option input{margin-top:3px; accent-color:var(--navy); flex:none;}
+  .option .opt-title{font-weight:700; font-size:14.5px; margin-bottom:2px;}
+  .option .opt-desc{font-size:13px; color:var(--muted);}
+  select, input[type=text], input[type=date], input[type=number]{
+    width:100%; padding:9px 12px; border:1.5px solid var(--line); border-radius:8px;
+    font-size:14px; font-family:inherit; color:var(--ink); background:#fff;
+  }
+  select:focus, input:focus{outline:2px solid var(--mint); outline-offset:1px; border-color:var(--mint);}
+  label.field-label{display:block; font-size:13px; font-weight:700; color:var(--navy-dark); margin-bottom:6px;}
+  .field{margin-bottom:15px;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:600px){.field-row{grid-template-columns:1fr;}}
+  .btn{display:inline-flex; align-items:center; gap:8px; background:var(--navy); color:#fff; border:none; padding:11px 18px; border-radius:8px; font-size:13.5px; font-weight:700; cursor:pointer; font-family:inherit;}
+  .btn:hover{background:var(--navy-dark);}
+  .btn.secondary{background:#fff; color:var(--navy); border:1.5px solid var(--navy);}
+  .btn.secondary:hover{background:#EFF5F7;}
+  .btn.success{background:var(--mint-dark);}
+  .btn.success:hover{background:#188C5D;}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+  .btn-row{display:flex; gap:12px; margin-top:22px; flex-wrap:wrap;}
+  .banner{border-radius:10px; padding:16px 18px; margin-bottom:22px; display:flex; gap:14px; align-items:flex-start;}
+  .banner.oui{background:var(--green-bg); border:1px solid #9FE3C4;}
+  .banner.non{background:#EEF2F3; border:1px solid var(--line);}
+  .banner.grise{background:var(--amber-bg); border:1px solid #EAC489;}
+  .banner .icon{font-size:20px; line-height:1;}
+  .banner .txt strong{display:block; font-size:15px; margin-bottom:2px;}
+  .banner .txt span{font-size:13px; color:var(--muted);}
+  .demarche{display:flex; gap:12px; padding:13px 0; border-top:1px solid var(--line);}
+  .demarche:first-child{border-top:none;}
+  .demarche input[type=checkbox]{ width:20px; height:20px; margin-top:2px; accent-color:var(--mint-dark); flex:none; cursor:pointer;}
+  .demarche .content{flex:1;}
+  .demarche .content .title{font-weight:700; font-size:14px; margin-bottom:3px;}
+  .demarche.checked .content .title{ text-decoration:line-through; color:var(--muted);}
+  .demarche .content .desc{font-size:13px; color:var(--muted); margin-bottom:7px;}
+  .demarche .content a.link{font-size:12.5px; font-weight:700; color:var(--navy); text-decoration:none; border-bottom:1.5px solid var(--mint);}
+  .demarche .content a.link:hover{color:var(--mint-dark);}
+  .tag{display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:999px; background:#EEF2F3; color:var(--muted); margin-left:8px;}
+  textarea.output{width:100%; min-height:230px; border:1.5px solid var(--line); border-radius:8px; padding:14px; font-family:"Courier New", monospace; font-size:12px; line-height:1.55; color:var(--ink); resize:vertical; background:#FAFBFB;}
+  .doc-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;}
+  .doc-header h3{margin:0; font-size:15.5px; color:var(--navy-dark);}
+  .doc-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .warn-note{font-size:12.5px; color:var(--muted); background:#F8F5EC; border:1px solid #E9DFC2; border-radius:8px; padding:11px 13px; margin-top:14px;}
+  .progress-line{font-size:13px; color:var(--muted); margin-bottom:6px;}
+  footer.appfoot{margin-top:28px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:14px;}
+
+  /* ---- Documentation ---- */
+  details.doc-entry{background:var(--panel); border:1px solid var(--line); border-radius:10px; margin-bottom:10px; padding:0;}
+  details.doc-entry summary{padding:14px 18px; font-weight:700; font-size:14.5px; color:var(--navy-dark); cursor:pointer; list-style:none;}
+  details.doc-entry summary::-webkit-details-marker{display:none;}
+  details.doc-entry summary::before{content:"▸ "; color:var(--mint-dark);}
+  details.doc-entry[open] summary::before{content:"▾ "; }
+  details.doc-entry .doc-body{padding:0 18px 16px; font-size:13.5px; color:var(--ink);}
+  details.doc-entry .doc-body p{margin:0 0 10px;}
+  details.doc-entry .doc-body strong{color:var(--navy-dark);}
+
+  /* ---- Historique table ---- */
+  table.histo{width:100%; border-collapse:collapse; font-size:13px;}
+  table.histo th{background:var(--navy); color:#fff; text-align:left; padding:10px 12px; font-size:12px;}
+  table.histo td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.histo tr:nth-child(even) td{background:#FAFBFB;}
+  .status-chip{display:inline-block; padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700;}
+  .status-chip.done{background:var(--green-bg); color:var(--mint-dark); border:1px solid #9FE3C4;}
+  .status-chip.progress{background:var(--amber-bg); color:var(--amber); border:1px solid #EAC489;}
+  .row-del{background:none; border:none; color:var(--red); cursor:pointer; font-size:12.5px; font-weight:700;}
+  .empty-state{padding:40px 20px; text-align:center; color:var(--muted);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-mark"></span><span class="brand-name">CYIM · Mobilité internationale</span></div>
+  <div class="tabnav" id="tabnav"></div>
+</div>
+
+<div class="app" id="appRoot"></div>
+
+<script>
+/* ============================= DONNÉES PAYS ============================= */
+
+const UE_COUNTRIES = [
+  ["Allemagne","zoll.de","https://www.zoll.de", true],
+  ["Autriche","postingofworkers.at","https://www.postingofworkers.at", true],
+  ["Belgique","limosa.be","https://www.limosa.be", true],
+  ["Bulgarie","postedworkers.gli.government.bg","https://postedworkers.gli.government.bg", false],
+  ["Chypre","mlsi.gov.cy","http://www.mlsi.gov.cy", false],
+  ["Croatie","mrosp.gov.hr","https://mrosp.gov.hr", true],
+  ["Danemark","workplacedenmark.dk (RUT)","https://www.workplacedenmark.dk", false],
+  ["Espagne","mites.gob.es","https://www.mites.gob.es", true],
+  ["Estonie","ti.ee","https://www.ti.ee", false],
+  ["Finlande","tyosuojelu.fi","https://www.tyosuojelu.fi", true],
+  ["Grèce","ypergasias.gov.gr","https://ypergasias.gov.gr", false],
+  ["Hongrie","mvff.munka.hu","https://mvff.munka.hu", false],
+  ["Irlande","workplacerelations.ie","https://www.workplacerelations.ie", true],
+  ["Islande","vinnumalastofnun.is","https://www.vinnumalastofnun.is", false],
+  ["Italie","distaccoue.lavoro.gov.it","https://www.lavoro.gov.it", true],
+  ["Lettonie","lm.gov.lv","https://www.lm.gov.lv", false],
+  ["Liechtenstein","llv.li","https://www.llv.li", true],
+  ["Lituanie","vdi.lt","https://www.vdi.lt", true],
+  ["Luxembourg","guichet.public.lu","https://guichet.public.lu", true],
+  ["Malte","dier.gov.mt","https://dier.gov.mt", true],
+  ["Norvège","udi.no","https://www.udi.no", true],
+  ["Pays-Bas","postedworkers.nl","https://www.postedworkers.nl", true],
+  ["Pologne","biznes.gov.pl","https://www.biznes.gov.pl", true],
+  ["Portugal","portal.act.gov.pt","https://portal.act.gov.pt", true],
+  ["République tchèque","suip.cz","https://www.suip.cz", true],
+  ["Roumanie","e-guvernare.ro","https://www.e-guvernare.ro", false],
+  ["Slovaquie","ip.gov.sk","https://www.ip.gov.sk", true],
+  ["Slovénie","napotenidelavci.si","https://www.napotenidelavci.si", true],
+  ["Suède","av.se","https://www.av.se", true],
+  ["Suisse","sem.admin.ch","https://www.sem.admin.ch", true],
+];
+
+const GENERIC_BILAT = "Certificat bilatéral possible (formulaire dédié aux conventions bilatérales), sous réserve que la convention entre la France et ce pays couvre le détachement — à vérifier avant la première mission vers cette destination.";
+
+function diplomatieUrl(slug){
+  return `https://www.diplomatie.gouv.fr/fr/information-par-pays/${slug}/conseils-aux-voyageurs-voyages-d-affaires`;
+}
+
+const OTHER_COUNTRIES = {
+  "Royaume-Uni": {
+    zone: "uk", slug: "royaume-uni",
+    certificat: "Certificat A1 via l'accord de commerce et de coopération UE-UK (procédure de détachement classique — pas d'accord-cadre télétravail signé par le UK)",
+    declaration: "Aucune déclaration préalable de type SIPSI au Royaume-Uni pour une mission technique ; vérifier le régime d'immigration (Standard Visitor) pour les activités autorisées.",
+    portailNom: "gov.uk (Standard Visitor)",
+    portailUrl: "https://www.gov.uk/permitted-paid-engagement-visa",
+    note: "Détachement plafonné à 24 mois, sans aucune prolongation ni dérogation exceptionnelle possible. Pour le télétravail, la démarche A1 suit la procédure normale de détachement (le bouton « Télétravail dérogatoire » d'urssaf.fr est inutilisable pour cette destination)."
+  },
+
+  // --- Maghreb ---
+  "Maroc": { zone:"bilateral", slug:"maroc", certificat:"Certificat bilatéral (convention du 22 octobre 2007), formulaire dédié aux conventions bilatérales", declaration:"Court séjour affaires généralement sans visa pour les Français (moins de 90 jours), mais l'exécution d'un travail technique (montage/installation) nécessite en principe une autorisation de travail marocaine distincte, à demander via l'employeur local ou le consulat.", note:"Détachement possible jusqu'à 3 ans, renouvelable une fois. Pas d'accord-cadre télétravail ; tolérance non écrite pour un télétravail ponctuel très court." },
+  "Algérie": { zone:"bilateral", slug:"algerie", certificat:"Certificat bilatéral (convention franco-algérienne), formulaire dédié aux conventions bilatérales", declaration:"Visa obligatoire même pour un court séjour d'affaires (à demander avant le départ auprès du consulat) ; une autorisation de travail distincte est requise pour toute activité salariée exercée sur place.", note:"Régime d'immigration plus strict que le Maroc et la Tunisie." },
+  "Tunisie": { zone:"bilateral", slug:"tunisie", certificat:"Certificat bilatéral (convention franco-tunisienne), formulaire dédié aux conventions bilatérales", declaration:"Court séjour affaires généralement sans visa pour les Français, mais une autorisation de travail est requise au-delà d'une simple visite, à demander auprès du ministère du Travail tunisien ou du consulat.", note:"Détachement possible, durée à vérifier au cas par cas." },
+  "Mauritanie": { zone:"bilateral", slug:"mauritanie", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; une autorisation de travail distincte est requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-mauritanienne existante." },
+
+  // --- Amérique du Nord ---
+  "Canada": { zone:"bilateral", slug:"canada", certificat:"Certificat bilatéral (convention franco-canadienne, et convention distincte avec le Québec)", declaration:"Distinction stricte visiteur d'affaires (AVE ou visa, sans permis de travail) / travailleur (permis de travail obligatoire) ; une catégorie d'exemption existe pour l'installation ou la mise en service d'équipements (« After-Sales Service »), à faire confirmer précisément par un conseil en immigration avant le départ.", note:"Vérifier le permis de travail au-delà d'une simple visite d'affaires. Le Québec a sa propre convention, distincte du reste du Canada." },
+  "États-Unis": { zone:"bilateral", slug:"etats-unis", certificat:"Certificat bilatéral (convention de sécurité sociale franco-américaine)", declaration:"Le statut ESTA/visa B-1 couvre réunions et négociations, mais pas l'exécution d'un travail manuel ou technique (montage, installation) : un visa de travail spécifique (ex. H-1B, L-1, ou B-1 « in lieu of H » selon les cas) est requis, à demander auprès de l'ambassade des États-Unis, procédure pouvant prendre plusieurs semaines à plusieurs mois.", note:"Ne pas confondre ESTA (dispense de visa touristique/affaires) et visa de travail : ce sont deux régimes distincts." },
+
+  // --- Amérique latine ---
+  "Argentine": { zone:"bilateral", slug:"argentine", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale franco-argentine existante." },
+  "Brésil": { zone:"bilateral", slug:"bresil", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français (90 jours) ; un visa de travail (VITEM) est requis pour toute activité technique rémunérée sur place, à demander avant le départ.", note:"Convention de sécurité sociale franco-brésilienne existante." },
+  "Chili": { zone:"bilateral", slug:"chili", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale franco-chilienne existante." },
+  "Uruguay": { zone:"bilateral", slug:"uruguay", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale franco-uruguayenne existante." },
+  "Mexique": { zone:"aucun", slug:"mexique", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Court séjour affaires généralement sans visa pour les Français ; un permis de travail temporaire (visa de travailleur) est requis pour toute activité technique rémunérée, à demander avant le départ auprès du consulat.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+
+  // --- Europe hors UE ---
+  "Turquie": { zone:"bilateral", slug:"turquie", certificat:"Certificat bilatéral (convention franco-turque du 20/01/1972, couvre toutes les branches sauf le chômage), formulaire SE 208-01", declaration:"Court séjour touristique ou affaires sans visa pour les Français (90 jours), mais toute activité technique de montage/démontage nécessite un « visa montage » spécifique : demande à déposer en personne au Consulat général de Turquie (rendez-vous en ligne), avec lettre de l'entreprise turque, autorisation ministérielle préalable (4 à 6 semaines de délai), coût 60 à 180 € en espèces. Ce visa ne peut être demandé qu'une seule fois par an, pour un maximum de 90 jours.", note:"Durée de maintien de la sécurité sociale fixée au cas par cas (article 6 de la convention). Le « visa montage » est une démarche à part entière, distincte du certificat bilatéral, à anticiper largement (délai total pouvant dépasser 6 semaines)." },
+  "Andorre": { zone:"bilateral", slug:"andorre", certificat:GENERIC_BILAT, declaration:"Pas de visa pour les ressortissants français ; vérifier néanmoins l'autorisation de travail andorrane pour toute activité rémunérée sur place.", note:"Convention de sécurité sociale franco-andorrane existante ; proximité géographique mais régime hors UE." },
+  "Monaco": { zone:"bilateral", slug:"monaco", certificat:GENERIC_BILAT, declaration:"Pas de visa pour les ressortissants français ; le droit du travail monégasque s'applique aux activités exercées sur place, à vérifier au cas par cas.", note:"Régime particulier lié à la proximité et aux accords franco-monégasques." },
+  "Serbie": { zone:"bilateral", slug:"serbie", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale existante avec l'ex-Yougoslavie, reprise par la Serbie." },
+  "Monténégro": { zone:"bilateral", slug:"montenegro", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale existante avec l'ex-Yougoslavie, reprise par le Monténégro." },
+  "Bosnie-Herzégovine": { zone:"bilateral", slug:"bosnie-herzegovine", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale existante avec l'ex-Yougoslavie, reprise par la Bosnie-Herzégovine." },
+  "Macédoine du Nord": { zone:"bilateral", slug:"macedoine-du-nord", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale existante avec l'ex-Yougoslavie, reprise par la Macédoine du Nord." },
+  "Kosovo": { zone:"bilateral", slug:"kosovo", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale existante ; statut international du Kosovo à garder en tête pour l'immigration." },
+
+  // --- Moyen-Orient ---
+  "Israël": { zone:"bilateral", slug:"israel-palestine", certificat:GENERIC_BILAT, declaration:"Une autorisation électronique de voyage (ETA-IL) est obligatoire avant le départ, à demander en ligne auprès de l'autorité israélienne de la population et de l'immigration ; elle ne couvre pas l'exercice d'une activité rémunérée, pour laquelle un visa de travail spécifique doit être sollicité au préalable auprès du consulat.", note:"Convention de sécurité sociale franco-israélienne existante. Contexte sécuritaire à vérifier systématiquement avant tout déplacement (voir Documentation > Rapatriement)." },
+  "Émirats arabes unis": { zone:"aucun", slug:"emirats-arabes-unis", certificat:"Aucun accord de sécurité sociale avec la France : aucun certificat de maintien possible", declaration:"Régime de permis de travail strict, rattaché à un sponsor local (entreprise émiratie ou partenaire local) ; une autorisation dédiée est nécessaire même pour une courte durée d'activité technique.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+  "Arabie saoudite": { zone:"aucun", slug:"arabie-saoudite", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Visa d'affaires distinct du visa de travail ; toute activité technique sur place nécessite un visa de travail sponsorisé par une entité locale, procédure à engager largement en amont.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+  "Qatar": { zone:"aucun", slug:"qatar", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Visa d'affaires distinct du permis de travail ; toute activité technique sur place nécessite une autorisation de travail sponsorisée localement.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+
+  // --- Afrique ---
+  "Sénégal": { zone:"bilateral", slug:"senegal", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; autorisation de travail requise au-delà d'une simple visite.", note:"Convention de sécurité sociale franco-sénégalaise existante." },
+  "Côte d'Ivoire": { zone:"bilateral", slug:"cote-d-ivoire", certificat:GENERIC_BILAT, declaration:"Visa biométrique obligatoire pour les Français, à demander avant le départ (vaccination fièvre jaune également exigée) ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-ivoirienne existante." },
+  "Cameroun": { zone:"bilateral", slug:"cameroun", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-camerounaise existante." },
+  "Gabon": { zone:"bilateral", slug:"gabon", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-gabonaise existante." },
+  "Congo": { zone:"bilateral", slug:"congo", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-congolaise existante." },
+  "Mali": { zone:"bilateral", slug:"mali", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-malienne existante." },
+  "Niger": { zone:"bilateral", slug:"niger", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-nigérienne existante." },
+  "Togo": { zone:"bilateral", slug:"togo", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-togolaise existante." },
+  "Bénin": { zone:"bilateral", slug:"benin", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-béninoise existante." },
+  "Madagascar": { zone:"bilateral", slug:"madagascar", certificat:GENERIC_BILAT, declaration:"Visa obligatoire (délivré à l'arrivée ou en ligne selon les cas) ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-malgache existante." },
+  "Cap-Vert": { zone:"bilateral", slug:"cap-vert", certificat:GENERIC_BILAT, declaration:"Visa obligatoire, à demander avant le départ ; autorisation de travail distincte requise pour toute activité salariée.", note:"Convention de sécurité sociale franco-capverdienne existante." },
+  "Afrique du Sud": { zone:"aucun", slug:"afrique-du-sud", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Court séjour affaires généralement sans visa pour les Français ; un permis de travail temporaire est requis pour toute activité technique rémunérée, procédure à engager largement en amont.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+
+  // --- Asie & Océanie ---
+  "Japon": { zone:"bilateral", slug:"japon", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français (90 jours), mais sans autorisation d'exercer une activité rémunérée ; un statut de résidence spécifique (visa de travail) est requis pour toute prestation technique sur place.", note:"Convention de sécurité sociale franco-japonaise existante." },
+  "Corée du Sud": { zone:"bilateral", slug:"coree-du-sud", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; un visa de travail est requis pour toute activité technique rémunérée sur place.", note:"Convention de sécurité sociale franco-coréenne existante." },
+  "Inde": { zone:"bilateral", slug:"inde", certificat:GENERIC_BILAT, declaration:"Un e-visa affaires est possible pour des réunions/négociations, mais un visa de travail (« Employment Visa ») est requis pour toute activité technique rémunérée, à demander avant le départ.", note:"Convention de sécurité sociale franco-indienne existante." },
+  "Philippines": { zone:"bilateral", slug:"philippines", certificat:GENERIC_BILAT, declaration:"Court séjour affaires généralement sans visa pour les Français ; un permis de travail spécifique est requis pour toute activité technique rémunérée.", note:"Convention de sécurité sociale franco-philippine existante." },
+  "Chine": { zone:"aucun", slug:"chine", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Le visa d'affaires (type M) couvre les réunions et négociations, mais pas l'exécution d'un travail manuel ou technique (montage, installation), qui nécessite en principe un permis de travail et un visa Z, procédure longue à anticiper largement.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+  "Thaïlande": { zone:"aucun", slug:"thailande", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Court séjour touristique/affaires généralement sans visa pour les Français (30 jours), mais cette dispense ne couvre pas l'exercice d'une activité rémunérée : un permis de travail thaïlandais (Work Permit) et un « Non-Immigrant B » visa sont requis pour toute activité technique sur place, y compris de courte durée.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé. Les contrôles sur le travail non déclaré sont réputés stricts en Thaïlande." },
+  "Singapour": { zone:"aucun", slug:"singapour", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Court séjour affaires généralement sans visa pour les Français ; un permis de travail (Work Pass) est requis pour toute activité technique rémunérée sur place.", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+  "Australie": { zone:"aucun", slug:"australie", certificat:"Aucun accord de sécurité sociale avec la France identifié : aucun certificat de maintien possible.", declaration:"Le visa « Business visitor » (ou eVisitor) couvre réunions et négociations, mais pas l'exécution d'un travail technique, qui nécessite un visa de travail spécifique (sponsorisé par une entité locale).", note:"Risque de double cotisation sociale ; envisager la CFE pour un séjour prolongé." },
+};
+
+function getCountryData(pays){
+  if(!pays) return null;
+  const ue = UE_COUNTRIES.find(c=>c[0]===pays);
+  if(ue) return {zone:'ue', nom:ue[0], portailNom:ue[1], portailUrl:ue[2], accordCadre:ue[3]};
+  const other = OTHER_COUNTRIES[pays];
+  if(other) return Object.assign({nom:pays}, other);
+  return null;
+}
+
+const REGION_GROUPS = [
+  ["Royaume-Uni", ["Royaume-Uni"]],
+  ["Maghreb", ["Maroc","Algérie","Tunisie","Mauritanie"]],
+  ["Amérique du Nord", ["Canada","États-Unis"]],
+  ["Amérique latine", ["Argentine","Brésil","Chili","Uruguay","Mexique"]],
+  ["Europe hors UE", ["Turquie","Andorre","Monaco","Serbie","Monténégro","Bosnie-Herzégovine","Macédoine du Nord","Kosovo"]],
+  ["Moyen-Orient", ["Israël","Émirats arabes unis","Arabie saoudite","Qatar"]],
+  ["Afrique", ["Sénégal","Côte d'Ivoire","Cameroun","Gabon","Congo","Mali","Niger","Togo","Bénin","Madagascar","Cap-Vert","Afrique du Sud"]],
+  ["Asie & Océanie", ["Japon","Corée du Sud","Inde","Philippines","Chine","Thaïlande","Singapour","Australie"]],
+];
+
+function countryOptionsHtml(selected){
+  const ueOptions = UE_COUNTRIES.map(c=>`<option value="${c[0]}" ${selected===c[0]?'selected':''}>${c[0]}</option>`).join('');
+  const groupedHtml = REGION_GROUPS.map(([label, names])=>{
+    const opts = names.filter(n=>OTHER_COUNTRIES[n]).map(n=>`<option value="${n}" ${selected===n?'selected':''}>${n}</option>`).join('');
+    return `<optgroup label="${label}">${opts}</optgroup>`;
+  }).join('');
+  return `<option value="">— Choisir un pays —</option>
+    <optgroup label="Union européenne / EEE / Suisse">${ueOptions}</optgroup>
+    ${groupedHtml}`;
+}
+
+/* ============================= STOCKAGE / HISTORIQUE ============================= */
+
+const STORAGE_KEY = 'cyim_mobilite_missions_v1';
+
+function loadMissions(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }catch(e){ return []; }
+}
+function saveMissions(list){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+function addOrUpdateMission(record){
+  const list = loadMissions();
+  const idx = list.findIndex(m=>m.id===record.id);
+  if(idx>=0) list[idx] = record; else list.push(record);
+  saveMissions(list);
+}
+function deleteMission(id){
+  saveMissions(loadMissions().filter(m=>m.id!==id));
+}
+
+
+/* ============================= UTILITAIRES ============================= */
+
+function uid(){ return 'm_' + Date.now() + '_' + Math.floor(Math.random()*10000); }
+
+function fmtDate(d){
+  if(!d) return '[date]';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+function saveBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function copyText(id, btn){
+  const el = document.getElementById(id);
+  el.select();
+  el.setSelectionRange(0, 999999);
+  navigator.clipboard.writeText(el.value).then(()=>{
+    const original = btn.textContent;
+    btn.textContent = 'Copié ✓';
+    setTimeout(()=>{ btn.textContent = original; }, 1600);
+  }).catch(()=>{ alert('Copie impossible dans ce navigateur ; sélectionnez et copiez manuellement le texte.'); });
+}
+
+async function downloadSimpleDocx(title, bodyText, filename){
+  if(!window.docx){
+    alert("La librairie de génération Word n'a pas pu se charger (connexion internet nécessaire au premier chargement de la page). Utilisez le bouton « Copier le texte » à la place.");
+    return;
+  }
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = window.docx;
+  const paragraphs = [
+    new Paragraph({ text: title, heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER, spacing:{after:300} })
+  ];
+  bodyText.split('\n').forEach(line=>{
+    if(line.trim()===''){
+      paragraphs.push(new Paragraph({ text:'' }));
+    } else {
+      paragraphs.push(new Paragraph({ children:[ new TextRun(line) ], spacing:{after:120} }));
+    }
+  });
+  const doc = new Document({ sections: [{ properties:{}, children: paragraphs }] });
+  const blob = await Packer.toBlob(doc);
+  saveBlob(blob, filename);
+}
+
+/* ============================= NAVIGATION PRINCIPALE ============================= */
+
+const TABS = [
+  {id:'detachement', label:'Détachement'},
+  {id:'teletravail', label:'Télétravail'},
+  {id:'historique', label:'Historique & export'},
+  {id:'documentation', label:'Documentation'},
+];
+
+const app = { currentTab: 'detachement' };
+
+function renderTabNav(){
+  const nav = document.getElementById('tabnav');
+  nav.innerHTML = TABS.map(t=>`<button class="${app.currentTab===t.id?'active':''}" onclick="switchTab('${t.id}')">${t.label}</button>`).join('');
+}
+
+function switchTab(tabId){
+  app.currentTab = tabId;
+  renderTabNav();
+  const root = document.getElementById('appRoot');
+  if(tabId==='detachement'){ root.className='app'; det.goTo(det.state.step); }
+  else if(tabId==='teletravail'){ root.className='app'; tt.goTo(tt.state.step); }
+  else if(tabId==='historique'){ root.className='app full'; renderHistorique(); }
+  else if(tabId==='documentation'){ root.className='app full'; renderDocumentation(); }
+}
+
+
+/* ============================= MODULE DÉTACHEMENT ============================= */
+
+const det = { state: {
+  step:0, missionId: uid(),
+  mission:null, statut:null, pays:null,
+  nomSalarie:"", poste:"", client:"", ville:"", dateDebut:"", dateFin:"", numeroA1:"",
+  checked:{}, validated:false
+}};
+
+const DET_STEP_LABELS = ["Nature de la mission","Statut du salarié","Destination","Détails de la mission","Démarches & documents"];
+
+function det_getQualification(){
+  const m = det.state.mission;
+  if(m==='technique') return 'oui';
+  if(m==='commercial') return 'non';
+  if(m==='mixte') return 'grise';
+  return null;
+}
+
+function det_renderRail(){
+  const root = document.getElementById('appRoot');
+  const stepsHtml = DET_STEP_LABELS.map((label,i)=>{
+    const cls = i===det.state.step ? 'active' : (i<det.state.step ? 'done':'');
+    return `<li class="${cls}"><span class="step-num">${i<det.state.step?'✓':(i+1)}</span><span>${label}</span></li>`;
+  }).join('');
+  const q = det_getQualification();
+  let pillClass='pending', pillTxt='En cours…';
+  if(det.state.step>=4 && q){
+    pillClass = q==='oui'?'oui':(q==='non'?'non':'grise');
+    pillTxt = q==='oui'?'Détachement':(q==='non'?'Pas de détachement':'Zone grise');
+  }
+  return `
+    <nav class="rail">
+      <h1>Détachement à l'étranger</h1>
+      <p class="sub">Congrès &amp; déplacements commerciaux</p>
+      <ul class="steps">${stepsHtml}</ul>
+      <div class="verdict-box">
+        <div class="label">Qualification</div>
+        <span class="verdict-pill ${pillClass}">${pillTxt}</span>
+      </div>
+      <div class="switch-box">
+        Cette mission n'implique aucune prestation pour un client sur place, juste du travail à distance ?
+        <button onclick="switchTab('teletravail')">Basculer vers Télétravail →</button>
+      </div>
+    </nav>`;
+}
+
+function det_screenWrap(eyebrow,title,sub,bodyHtml){
+  return `<main>
+    <div class="eyebrow">${eyebrow}</div>
+    <h2>${title}</h2>
+    <p class="panel-sub">${sub}</p>
+    ${bodyHtml}
+    <footer class="appfoot">Outil interne CYIM — reprend la note « Détachement du personnel à l'étranger » (v2). Les liens ouvrent les sites officiels dans un nouvel onglet ; aucune donnée saisie ici n'est transmise à un serveur, tout reste dans votre navigateur (localStorage).</footer>
+  </main>`;
+}
+
+det.render0 = function(){
+  const options = [
+    ['technique','Personnel technique congrès','Montage, démontage, exploitation technique sur site pour le compte d\'un client.'],
+    ['commercial','Visite ou négociation commerciale','Avant-vente, présentation, suivi commercial — sans intervention technique.'],
+    ['mixte','Commercial ou technicien avec exécution sur site','Installation, configuration, dépannage ou formation lors du déplacement.'],
+  ];
+  const opts = options.map(([val,title,desc])=>`
+    <label class="option ${det.state.mission===val?'selected':''}">
+      <input type="radio" name="det_mission" value="${val}" ${det.state.mission===val?'checked':''} onchange="det_setMission('${val}')">
+      <div><div class="opt-title">${title}</div><div class="opt-desc">${desc}</div></div>
+    </label>`).join('');
+  document.getElementById('appRoot').innerHTML = det_renderRail() + det_screenWrap(
+    "Détachement — Étape 1 / 5", "Quelle est la nature de la mission ?",
+    "La qualification de détachement dépend des faits, pas de l'intitulé du poste.",
+    `<div class="card"><div class="option-grid">${opts}</div></div>
+     <div class="btn-row"><button class="btn" ${det.state.mission?'':'disabled'} onclick="det.goTo(1)">Continuer</button></div>`
+  );
+};
+
+det.render1 = function(){
+  const options = [
+    ['salarie','Salarié permanent','CYIM (RH) fait la demande, via urssaf.fr.'],
+    ['intermittent','Intermittent (CDDU)','Même procédure qu\'un salarié permanent, faite par CYIM (RH).'],
+    ['auto','Auto-entrepreneur','L\'intéressé demande lui-même son certificat ; CYIM vérifie son existence avant le départ.'],
+  ];
+  const opts = options.map(([val,title,desc])=>`
+    <label class="option ${det.state.statut===val?'selected':''}">
+      <input type="radio" name="det_statut" value="${val}" ${det.state.statut===val?'checked':''} onchange="det_setStatut('${val}')">
+      <div><div class="opt-title">${title}</div><div class="opt-desc">${desc}</div></div>
+    </label>`).join('');
+  document.getElementById('appRoot').innerHTML = det_renderRail() + det_screenWrap(
+    "Détachement — Étape 2 / 5", "Quel est le statut du salarié ?", "Le responsable de la démarche change selon le statut.",
+    `<div class="card"><div class="option-grid">${opts}</div></div>
+     <div class="btn-row"><button class="btn secondary" onclick="det.goTo(0)">Retour</button><button class="btn" ${det.state.statut?'':'disabled'} onclick="det.goTo(2)">Continuer</button></div>`
+  );
+};
+
+det.render2 = function(){
+  document.getElementById('appRoot').innerHTML = det_renderRail() + det_screenWrap(
+    "Détachement — Étape 3 / 5", "Quelle est la destination ?", "Le certificat de sécurité sociale et la déclaration préalable dépendent du pays.",
+    `<div class="card"><div class="field"><label class="field-label">Pays de destination</label>
+      <select id="det_paysSelect" onchange="det_setPays(this.value)">${countryOptionsHtml(det.state.pays)}</select>
+    </div></div>
+     <div class="btn-row"><button class="btn secondary" onclick="det.goTo(1)">Retour</button><button class="btn" ${det.state.pays?'':'disabled'} onclick="det.goTo(3)">Continuer</button></div>`
+  );
+};
+
+det.render3 = function(){
+  const s = det.state;
+  document.getElementById('appRoot').innerHTML = det_renderRail() + det_screenWrap(
+    "Détachement — Étape 4 / 5", "Détails de la mission", "Ces informations serviront à préremplir l'attestation, le mail et la checklist.",
+    `<div class="card">
+      <div class="field-row">
+        <div class="field"><label class="field-label">Nom et prénom du salarié</label><input type="text" id="d_nom" value="${s.nomSalarie}"></div>
+        <div class="field"><label class="field-label">Poste occupé</label><input type="text" id="d_poste" value="${s.poste}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Client / congrès</label><input type="text" id="d_client" value="${s.client}"></div>
+        <div class="field"><label class="field-label">Ville de la mission</label><input type="text" id="d_ville" value="${s.ville}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Date de début</label><input type="date" id="d_debut" value="${s.dateDebut}"></div>
+        <div class="field"><label class="field-label">Date de fin</label><input type="date" id="d_fin" value="${s.dateFin}"></div>
+      </div>
+      <div class="field"><label class="field-label">N° de certificat A1 (une fois obtenu — facultatif)</label><input type="text" id="d_a1" value="${s.numeroA1}" placeholder="À compléter une fois délivré par l'Urssaf"></div>
+    </div>
+     <div class="btn-row"><button class="btn secondary" onclick="det.goTo(2)">Retour</button><button class="btn" onclick="det_collectAndGo(4)">Voir les démarches et générer les documents</button></div>`
+  );
+};
+
+function det_collectAndGo(step){
+  const s = det.state;
+  s.nomSalarie = document.getElementById('d_nom').value;
+  s.poste = document.getElementById('d_poste').value;
+  s.client = document.getElementById('d_client').value;
+  s.ville = document.getElementById('d_ville').value;
+  s.dateDebut = document.getElementById('d_debut').value;
+  s.dateFin = document.getElementById('d_fin').value;
+  s.numeroA1 = document.getElementById('d_a1').value;
+  det.goTo(step);
+}
+
+function det_buildDeclarationItem(cd){
+  if(cd.zone==='ue'){
+    return { title:'Déclaration préalable de détachement dans le pays d\'accueil',
+      desc: `Portail national : ${cd.portailNom}. Concerne la sécurité sociale/droit du travail (SIPSI local), pas l'immigration : la libre circulation UE/EEE/Suisse dispense de visa.`,
+      link: cd.portailUrl, linkLabel: `Ouvrir ${cd.portailNom}`, tag:'CYIM (RH)' };
+  }
+  if(cd.zone==='uk'){
+    return { title:'Immigration et activités autorisées',
+      desc: cd.declaration, link: cd.portailUrl, linkLabel: `Ouvrir ${cd.portailNom}`, tag:'CYIM (RH)' };
+  }
+  // bilateral ou aucun : ce n'est pas une déclaration SIPSI, c'est un sujet immigration/visa/permis de travail
+  return { title:'Immigration : visa et/ou permis de travail',
+    desc: (cd.declaration||'') + ' Le lien ci-dessous renvoie vers les conseils aux voyageurs officiels (France Diplomatie) pour ce pays ; si un permis de travail distinct du visa est nécessaire, la démarche s\'effectue ensuite auprès du consulat ou de l\'autorité locale compétente.',
+    link: diplomatieUrl(cd.slug), linkLabel:'Voir les conseils aux voyageurs (France Diplomatie)', tag:'CYIM (RH)' };
+}
+
+function det_buildDemarcheItems(){
+  const s = det.state;
+  const cd = getCountryData(s.pays);
+  if(!cd) return [];
+  let items = [];
+  items.push({ title:'Certificat de sécurité sociale',
+    desc: cd.zone==='ue' ? 'Certificat A1 — Urssaf, portail ILASS.' : (cd.certificat||''),
+    link:'https://www.urssaf.fr/accueil/services/travail-etranger-mobilite.html', linkLabel:'Faire la demande sur urssaf.fr',
+    tag: s.statut==='auto' ? 'À la charge du salarié' : 'CYIM (RH)' });
+  items.push(det_buildDeclarationItem(cd));
+  if(cd.zone==='ue' && cd.accordCadre){
+    items.push({ title:'Accord-cadre télétravail transfrontalier (si une partie de la mission est du télétravail régulier)',
+      desc:'Ce pays est signataire : si 25 à 49,9 % du temps est du télétravail habituel, une procédure simplifiée existe (bouton « Télétravail dérogatoire » sur urssaf.fr).',
+      link:'https://www.urssaf.fr/accueil/services/travail-etranger-mobilite.html', linkLabel:'Voir le service Mobilité internationale', tag:'Optionnel' });
+  }
+  items.push({ title:'Attestation de détachement CYIM', desc:'Document interne signé par la Direction ou les RH, généré ci-dessous.', tag:'CYIM (RH)' });
+  items.push({ title:'Documents remis au salarié', desc:'Checklist et mail type générés ci-dessous.', tag:'CYIM (RH)' });
+  items.push({ title:'Assurance voyage professionnelle', desc:'Vérifier la garantie assistance/rapatriement, et demander une attestation ponctuelle si le pays ou le client l\'exige.', tag:'CYIM (RH/Direction)' });
+  return items;
+}
+
+det.render4 = function(){
+  const s = det.state;
+  const q = det_getQualification();
+  const cd = getCountryData(s.pays);
+  const banners = {
+    oui: ['✔️','Détachement quasi certain','Prestation exécutée pour un client sur place : suivre l\'ensemble des démarches ci-dessous.'],
+    non: ['ℹ️','Pas un détachement au sens strict','Simple visite ou négociation commerciale : les démarches de détachement ne s\'appliquent pas. Vérifiez toutefois l\'assurance voyage.'],
+    grise: ['⚠️','Zone grise — à confirmer avant le départ','Dès qu\'il y a exécution matérielle, la qualification de détachement redevient probable. Vérifiez au cas par cas.'],
+  };
+  const [icon,title,desc] = banners[q] || banners.grise;
+  const bannerClass = q==='oui' ? 'oui' : (q==='non' ? 'non':'grise');
+  const showDocs = q !== 'non';
+
+  let demarchesHtml = '';
+  let items = [];
+  if(showDocs && cd){
+    items = det_buildDemarcheItems();
+    demarchesHtml = items.map((it,i)=>{
+      const checked = !!s.checked[i];
+      return `
+      <div class="demarche ${checked?'checked':''}">
+        <input type="checkbox" ${checked?'checked':''} onchange="det_toggleCheck(${i})">
+        <div class="content">
+          <div class="title">${it.title}<span class="tag">${it.tag}</span></div>
+          <div class="desc">${it.desc}</div>
+          ${it.link ? `<a class="link" href="${it.link}" target="_blank" rel="noopener">${it.linkLabel} ↗</a>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    if(cd.note) demarchesHtml += `<div class="warn-note"><strong>À noter :</strong> ${cd.note}</div>`;
+  } else if(q==='non'){
+    demarchesHtml = `<div class="warn-note">Aucune démarche de détachement à réaliser. Pensez tout de même à vérifier la couverture d'assurance voyage du salarié avant son départ.</div>`;
+  } else {
+    demarchesHtml = `<div class="warn-note">Sélectionnez une destination à l'étape 3 pour afficher les démarches précises.</div>`;
+  }
+
+  const doneCount = items.length ? items.filter((_,i)=>s.checked[i]).length : 0;
+  const progressHtml = items.length ? `<div class="progress-line">${doneCount} / ${items.length} démarches cochées</div>` : '';
+
+  document.getElementById('appRoot').innerHTML = det_renderRail() + det_screenWrap(
+    "Détachement — Étape 5 / 5", "Démarches et documents", "Résultat basé sur vos réponses — à confirmer au cas par cas pour toute situation atypique.",
+    `<div class="banner ${bannerClass}"><div class="icon">${icon}</div><div class="txt"><strong>${title}</strong><span>${desc}</span></div></div>
+     <div class="card"><h3 style="margin-top:0;">Démarches à réaliser</h3>${progressHtml}${demarchesHtml}</div>
+     ${showDocs && cd ? det_renderDocGenerators() : ''}
+     ${showDocs && cd ? `<div class="card">
+        <h3 style="margin-top:0;">Validation et traçabilité</h3>
+        <p style="font-size:13.5px;color:var(--muted);margin-top:0;">Valider enregistre cette mission dans l'historique (onglet « Historique & export »), avec le détail des démarches cochées, pour le suivi et l'export Excel.</p>
+        <button class="btn success" onclick="det_validate()">${s.validated ? 'Mission validée ✓ — mettre à jour' : 'Valider la démarche accomplie'}</button>
+     </div>` : ''}
+     <div class="btn-row"><button class="btn secondary" onclick="det.goTo(3)">Retour</button><button class="btn secondary" onclick="det_reset()">Nouvelle mission (réinitialiser)</button></div>`
+  );
+};
+
+function det_renderDocGenerators(){
+  return `
+    <div class="card">
+      <div class="doc-header"><h3>Attestation de détachement CYIM</h3>
+        <div class="doc-actions">
+          <button class="btn secondary" onclick="copyText('det-doc-attestation', this)">Copier le texte</button>
+          <button class="btn" onclick="downloadSimpleDocx('ATTESTATION DE DÉTACHEMENT', document.getElementById('det-doc-attestation').value, 'Attestation_detachement_${(det.state.nomSalarie||'salarie').replace(/\\s+/g,'_')}.docx')">Télécharger en .docx</button>
+        </div>
+      </div>
+      <textarea class="output" id="det-doc-attestation" readonly>${det_buildAttestation()}</textarea>
+    </div>
+    <div class="card">
+      <div class="doc-header"><h3>Mail au salarié</h3>
+        <div class="doc-actions">
+          <button class="btn secondary" onclick="copyText('det-doc-mail', this)">Copier le texte</button>
+          <button class="btn" onclick="downloadSimpleDocx('MAIL — Certificat A1', document.getElementById('det-doc-mail').value, 'Mail_A1_${(det.state.nomSalarie||'salarie').replace(/\\s+/g,'_')}.docx')">Télécharger en .docx</button>
+        </div>
+      </div>
+      <textarea class="output" id="det-doc-mail" readonly>${det_buildMail()}</textarea>
+    </div>
+    <div class="card">
+      <div class="doc-header"><h3>Checklist documents &amp; contacts</h3>
+        <div class="doc-actions">
+          <button class="btn secondary" onclick="copyText('det-doc-checklist', this)">Copier le texte</button>
+          <button class="btn" onclick="downloadSimpleDocx('CHECKLIST — Documents et contacts', document.getElementById('det-doc-checklist').value, 'Checklist_${(det.state.nomSalarie||'salarie').replace(/\\s+/g,'_')}.docx')">Télécharger en .docx</button>
+        </div>
+      </div>
+      <textarea class="output" id="det-doc-checklist" readonly>${det_buildChecklist()}</textarea>
+    </div>
+  `;
+}
+
+function det_buildAttestation(){
+  const s = det.state;
+  return `Je soussigné(e) [Nom, Prénom], en qualité de [fonction] de la société CYIM (Groupe Stlenneg), certifie que :
+
+- ${s.nomSalarie || '[Nom, Prénom du salarié]'}, employé(e) par CYIM en qualité de ${s.poste || '[poste]'}, est titulaire d'un contrat de travail en cours ;
+
+- ce salarié est détaché par CYIM pour exécuter une mission au bénéfice de ${s.client || '[nom du client]'}, à ${s.ville || '[ville]'}, ${s.pays || '[pays]'} ;
+
+- cette mission se déroule du ${fmtDate(s.dateDebut)} au ${fmtDate(s.dateFin)} ;
+
+- pendant toute la durée de cette mission, le salarié demeure lié à CYIM par son contrat de travail, reste rémunéré par CYIM et reste affilié au régime français de sécurité sociale, ainsi qu'en atteste le certificat A1 n° ${s.numeroA1 || '[à compléter]'} joint à la présente ;
+
+- cette mission revêt un caractère temporaire et ponctuel et ne saurait être assimilée à une expatriation ou à un transfert durable d'activité.
+
+Fait pour servir et valoir ce que de droit.
+
+À Rennes, le [date]
+[Nom, fonction, signature et cachet CYIM]`;
+}
+
+function det_buildMail(){
+  const s = det.state;
+  return `Objet : Votre certificat A1 pour votre mission à ${s.ville || '[PAYS]'} du ${fmtDate(s.dateDebut)} au ${fmtDate(s.dateFin)}
+
+Bonjour ${s.nomSalarie ? s.nomSalarie.split(' ')[0] : '[Prénom]'},
+
+Vous trouverez ci-joint votre certificat A1 pour votre mission à ${s.pays || '[pays]'} du ${fmtDate(s.dateDebut)} au ${fmtDate(s.dateFin)}.
+
+À quoi sert ce document : il atteste que, pendant votre mission, vous restez rattaché(e) à la Sécurité sociale française. Il évite que des cotisations sociales vous soient réclamées dans le pays de destination et garantit la continuité de vos droits (maladie, retraite) pendant votre absence.
+
+Ce que vous devez en faire : conservez ce document sur vous (imprimé ou sur votre téléphone) pendant toute la durée de la mission. Il peut vous être demandé par l'inspection du travail ou les autorités de sécurité sociale du pays d'accueil en cas de contrôle sur le lieu de la mission.
+
+Autres documents à emporter : vous trouverez en pièce jointe la checklist des documents à avoir avec vous pour cette mission, ainsi que les contacts utiles en cas de besoin sur place.
+
+N'hésitez pas à revenir vers le service RH pour toute question avant votre départ.
+
+Bonne mission,
+[Signature RH]`;
+}
+
+function det_buildChecklist(){
+  const s = det.state;
+  return `CHECKLIST — Documents et contacts pour la mission de ${s.nomSalarie || '[nom du salarié]'}
+Destination : ${s.pays || '[pays]'} — du ${fmtDate(s.dateDebut)} au ${fmtDate(s.dateFin)}
+
+DOCUMENTS À AVOIR SUR SOI
+[ ] Pièce d'identité ou passeport valide (vérifier la date d'expiration)
+[ ] Certificat A1 ou certificat de maintien/bilatéral (n° ${s.numeroA1 || 'à compléter'})
+[ ] Attestation de détachement CYIM, ou à défaut ordre de mission mentionnant dates et lieu
+[ ] Copie du contrat de travail ou de l'avenant en cours
+[ ] Dernier bulletin de paie
+[ ] Attestation d'assurance voyage professionnelle
+[ ] Le cas échéant : visa ou justificatif d'autorisation de travail
+
+CONTACTS UTILES
+RH CYIM : [contact]
+Assurance voyage / assistance : [numéro d'urgence]
+Ambassade ou consulat de France sur place : [à vérifier avant le départ]
+Manager / responsable de mission : [contact]`;
+}
+
+function det_setMission(v){ det.state.mission = v; det.render0(); }
+function det_setStatut(v){ det.state.statut = v; det.render1(); }
+function det_setPays(v){ det.state.pays = v; det.render2(); }
+function det_toggleCheck(i){ det.state.checked[i] = !det.state.checked[i]; det.render4(); }
+
+function det_validate(){
+  const s = det.state;
+  const items = det_buildDemarcheItems();
+  const record = {
+    id: s.missionId, module:'Détachement', dateEnregistrement: new Date().toISOString(),
+    salarie: s.nomSalarie || '(non renseigné)', poste: s.poste, statut: s.statut,
+    pays: s.pays, client: s.client, ville: s.ville, dateDebut: s.dateDebut, dateFin: s.dateFin,
+    numeroA1: s.numeroA1, qualification: det_getQualification(),
+    demarches: items.map((it,i)=>({ titre: it.title, fait: !!s.checked[i] })),
+    validated: true
+  };
+  addOrUpdateMission(record);
+  s.validated = true;
+  det.render4();
+  alert('Mission enregistrée dans l\'historique.');
+}
+
+function det_reset(){
+  det.state = { step:0, missionId: uid(), mission:null, statut:null, pays:null,
+    nomSalarie:"", poste:"", client:"", ville:"", dateDebut:"", dateFin:"", numeroA1:"",
+    checked:{}, validated:false };
+  det.goTo(0);
+}
+
+det.goTo = function(step){
+  det.state.step = step;
+  if(step===0) det.render0();
+  else if(step===1) det.render1();
+  else if(step===2) det.render2();
+  else if(step===3) det.render3();
+  else if(step===4) det.render4();
+};
+
+
+/* ============================= MODULE TÉLÉTRAVAIL ============================= */
+
+const tt = { state: {
+  step:0, missionId: uid(),
+  execution:null, // 'oui' (prestation client) | 'non' (télétravail pur)
+  statut:'salarie', pays:null, part:null, // 'ponctuel' | '25-50' | '50plus'
+  nomSalarie:"", poste:"", dateDebut:"", dateFin:"", numeroA1:"",
+  checked:{}, validated:false
+}};
+
+const TT_STEP_LABELS = ["Nature du travail","Destination & durée","Détails","Démarches & documents"];
+
+function tt_renderRail(){
+  const stepsHtml = TT_STEP_LABELS.map((label,i)=>{
+    const cls = i===tt.state.step ? 'active' : (i<tt.state.step ? 'done':'');
+    return `<li class="${cls}"><span class="step-num">${i<tt.state.step?'✓':(i+1)}</span><span>${label}</span></li>`;
+  }).join('');
+  return `
+    <nav class="rail">
+      <h1>Télétravail à l'étranger</h1>
+      <p class="sub">Sécurité sociale du salarié en télétravail</p>
+      <ul class="steps">${stepsHtml}</ul>
+      <div class="switch-box">
+        Le salarié va en réalité exécuter une prestation pour un client sur place (montage, installation, formation) ?
+        <button onclick="switchTab('detachement')">Basculer vers Détachement →</button>
+      </div>
+    </nav>`;
+}
+
+function tt_screenWrap(eyebrow,title,sub,bodyHtml){
+  return `<main>
+    <div class="eyebrow">${eyebrow}</div>
+    <h2>${title}</h2>
+    <p class="panel-sub">${sub}</p>
+    ${bodyHtml}
+    <footer class="appfoot">Outil interne CYIM — reprend la note « Télétravail hors France » et son annexe pays. Réservé aux salariés de CYIM (le télétravail des intermittents et auto-entrepreneurs n'est pas couvert par ce module). Le télétravail ne nécessite jamais de déclaration SIPSI/Limosa (réservée à l'exécution d'une prestation pour un client local).</footer>
+  </main>`;
+}
+
+tt.render0 = function(){
+  document.getElementById('appRoot').innerHTML = tt_renderRail() + tt_screenWrap(
+    "Télétravail — Étape 1 / 4", "Le salarié va-t-il exécuter une prestation pour un client sur place ?",
+    "C'est la question qui distingue le télétravail du détachement au sens strict.",
+    `<div class="card"><div class="option-grid">
+      <label class="option ${tt.state.execution==='non'?'selected':''}">
+        <input type="radio" name="tt_exec" ${tt.state.execution==='non'?'checked':''} onchange="tt_setExecution('non')">
+        <div><div class="opt-title">Non — télétravail pour CYIM uniquement</div><div class="opt-desc">Le salarié travaille à distance pour CYIM, aucune prestation livrée à un client local.</div></div>
+      </label>
+      <label class="option ${tt.state.execution==='oui'?'selected':''}">
+        <input type="radio" name="tt_exec" ${tt.state.execution==='oui'?'checked':''} onchange="tt_setExecution('oui')">
+        <div><div class="opt-title">Oui — il y a une prestation pour un client</div><div class="opt-desc">Ce n'est pas du télétravail au sens strict : c'est un détachement.</div></div>
+      </label>
+    </div></div>
+    <div class="btn-row"><button class="btn" ${tt.state.execution?'':'disabled'} onclick="tt_afterStep0()">Continuer</button></div>`
+  );
+};
+
+function tt_afterStep0(){
+  if(tt.state.execution==='oui'){
+    switchTab('detachement');
+  } else {
+    tt.goTo(1);
+  }
+}
+
+tt.render1 = function(){
+  const s = tt.state;
+  const partOptions = [
+    ['ponctuel','Ponctuel et court (quelques jours à 2-3 semaines)'],
+    ['25-50','Régulier, entre 25 % et 49,9 % du temps de travail'],
+    ['50plus','50 % ou plus du temps de travail'],
+  ];
+  const opts = partOptions.map(([val,label])=>`
+    <label class="option ${s.part===val?'selected':''}">
+      <input type="radio" name="tt_part" ${s.part===val?'checked':''} onchange="tt_setPart('${val}')">
+      <div><div class="opt-title">${label}</div></div>
+    </label>`).join('');
+  document.getElementById('appRoot').innerHTML = tt_renderRail() + tt_screenWrap(
+    "Télétravail — Étape 2 / 4", "Destination et part du temps en télétravail", "La part du temps de travail détermine si l'accord-cadre télétravail transfrontalier peut s'appliquer.",
+    `<div class="card">
+      <div class="field"><label class="field-label">Pays de résidence pendant le télétravail</label>
+        <select id="tt_paysSelect" onchange="tt_setPays(this.value)">${countryOptionsHtml(s.pays)}</select>
+      </div>
+      <div class="field"><label class="field-label">Part du temps de travail concernée</label>
+        <div class="option-grid">${opts}</div>
+      </div>
+    </div>
+     <div class="btn-row"><button class="btn secondary" onclick="tt.goTo(0)">Retour</button><button class="btn" ${(s.pays && s.part)?'':'disabled'} onclick="tt.goTo(2)">Continuer</button></div>`
+  );
+};
+
+tt.render2 = function(){
+  const s = tt.state;
+  document.getElementById('appRoot').innerHTML = tt_renderRail() + tt_screenWrap(
+    "Télétravail — Étape 3 / 4", "Détails", "",
+    `<div class="card">
+      <div class="field-row">
+        <div class="field"><label class="field-label">Nom et prénom du salarié</label><input type="text" id="t_nom" value="${s.nomSalarie}"></div>
+        <div class="field"><label class="field-label">Poste occupé</label><input type="text" id="t_poste" value="${s.poste}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Date de début</label><input type="date" id="t_debut" value="${s.dateDebut}"></div>
+        <div class="field"><label class="field-label">Date de fin</label><input type="date" id="t_fin" value="${s.dateFin}"></div>
+      </div>
+      <div class="field"><label class="field-label">N° de certificat (une fois obtenu — facultatif)</label><input type="text" id="t_a1" value="${s.numeroA1}"></div>
+    </div>
+     <div class="btn-row"><button class="btn secondary" onclick="tt.goTo(1)">Retour</button><button class="btn" onclick="tt_collectAndGo(3)">Voir les démarches et générer les documents</button></div>`
+  );
+};
+
+function tt_collectAndGo(step){
+  const s = tt.state;
+  s.nomSalarie = document.getElementById('t_nom').value;
+  s.poste = document.getElementById('t_poste').value;
+  s.dateDebut = document.getElementById('t_debut').value;
+  s.dateFin = document.getElementById('t_fin').value;
+  s.numeroA1 = document.getElementById('t_a1').value;
+  tt.goTo(step);
+}
+
+function tt_buildDemarcheItems(){
+  const s = tt.state;
+  const cd = getCountryData(s.pays);
+  if(!cd) return [];
+  let items = [];
+  if(cd.zone==='ue'){
+    if(s.part==='25-50' && cd.accordCadre){
+      items.push({ title:'Certificat A1 — accord-cadre télétravail transfrontalier', desc:'Ce pays est signataire de l\'accord-cadre (1er juillet 2023) : demande via le bouton « Télétravail dérogatoire » sur urssaf.fr.', link:'https://www.urssaf.fr/accueil/services/travail-etranger-mobilite.html', linkLabel:'Faire la demande sur urssaf.fr', tag:'CYIM (RH)' });
+    } else if(s.part==='25-50' && !cd.accordCadre){
+      items.push({ title:'Certificat A1 — procédure normale (pluriactivité)', desc:'Ce pays n\'a pas signé l\'accord-cadre : pas de bouton « Télétravail dérogatoire ». Utiliser la demande standard de détermination de législation applicable.', link:'https://www.urssaf.fr/accueil/services/travail-etranger-mobilite.html', linkLabel:'Faire la demande sur urssaf.fr', tag:'CYIM (RH)' });
+    } else if(s.part==='50plus'){
+      items.push({ title:'Bascule probable vers le régime local', desc:'Au-delà de 50 % du temps de travail dans le pays de résidence, l\'affiliation au régime français n\'est en principe plus possible : une analyse dédiée est nécessaire avant toute décision.', tag:'Analyse RH nécessaire' });
+    } else {
+      items.push({ title:'Certificat A1 — télétravail ponctuel', desc:'Pour un télétravail ponctuel et court, la demande standard suffit ; aucun accord-cadre n\'est nécessaire pour une présence aussi limitée.', link:'https://www.urssaf.fr/accueil/services/travail-etranger-mobilite.html', linkLabel:'Faire la demande sur urssaf.fr', tag:'CYIM (RH)' });
+    }
+  } else if(cd.zone==='uk'){
+    items.push({ title:'Certificat A1 — procédure de détachement classique', desc:'Le Royaume-Uni n\'a pas signé l\'accord-cadre télétravail : la demande suit la procédure normale de détachement, plafonnée à 24 mois sans prolongation.', link:'https://www.urssaf.fr/accueil/services/travail-etranger-mobilite.html', linkLabel:'Faire la demande sur urssaf.fr', tag:'CYIM (RH)' });
+  } else if(cd.zone==='bilateral'){
+    items.push({ title:'Certificat bilatéral', desc: cd.certificat + (s.part==='ponctuel' ? ' Pour un télétravail ponctuel et très court, une tolérance non écrite est parfois admise, mais ce point reste juridiquement flou.' : ''), link:'https://www.urssaf.fr/accueil/services/travail-etranger-mobilite.html', linkLabel:'Faire la demande sur urssaf.fr (formulaire bilatéral)', tag:'CYIM (RH)' });
+  } else if(cd.zone==='aucun'){
+    items.push({ title:'Aucun certificat possible', desc:'Aucun accord de sécurité sociale avec ce pays : risque de double cotisation au-delà d\'un télétravail ponctuel. Envisager la CFE pour un séjour prolongé.', tag:'Analyse RH nécessaire' });
+  }
+  items.push({ title:'Vérifier l\'assurance voyage / santé', desc:'S\'assurer que la couverture santé reste valable pendant le séjour à l\'étranger.', tag:'CYIM (RH)' });
+  return items;
+}
+
+tt.render3 = function(){
+  const s = tt.state;
+  const cd = getCountryData(s.pays);
+  let items = cd ? tt_buildDemarcheItems() : [];
+  const demarchesHtml = items.length ? items.map((it,i)=>{
+    const checked = !!s.checked[i];
+    return `<div class="demarche ${checked?'checked':''}">
+      <input type="checkbox" ${checked?'checked':''} onchange="tt_toggleCheck(${i})">
+      <div class="content"><div class="title">${it.title}<span class="tag">${it.tag}</span></div>
+      <div class="desc">${it.desc}</div>
+      ${it.link ? `<a class="link" href="${it.link}" target="_blank" rel="noopener">${it.linkLabel} ↗</a>` : ''}</div>
+    </div>`;
+  }).join('') + (cd && cd.note ? `<div class="warn-note"><strong>À noter :</strong> ${cd.note}</div>` : '')
+    : `<div class="warn-note">Sélectionnez une destination à l'étape 2.</div>`;
+
+  const doneCount = items.length ? items.filter((_,i)=>s.checked[i]).length : 0;
+  const progressHtml = items.length ? `<div class="progress-line">${doneCount} / ${items.length} démarches cochées</div>` : '';
+
+  document.getElementById('appRoot').innerHTML = tt_renderRail() + tt_screenWrap(
+    "Télétravail — Étape 4 / 4", "Démarches et documents", "Aucune déclaration SIPSI/Limosa n'est jamais nécessaire pour du télétravail seul.",
+    `<div class="card"><h3 style="margin-top:0;">Démarches à réaliser</h3>${progressHtml}${demarchesHtml}</div>
+     ${items.length ? tt_renderDocGenerators() : ''}
+     ${items.length ? `<div class="card">
+        <h3 style="margin-top:0;">Validation et traçabilité</h3>
+        <button class="btn success" onclick="tt_validate()">${s.validated ? 'Mission validée ✓ — mettre à jour' : 'Valider la démarche accomplie'}</button>
+     </div>` : ''}
+     <div class="btn-row"><button class="btn secondary" onclick="tt.goTo(2)">Retour</button><button class="btn secondary" onclick="tt_reset()">Nouvelle situation (réinitialiser)</button></div>`
+  );
+};
+
+function tt_renderDocGenerators(){
+  return `<div class="card">
+      <div class="doc-header"><h3>Mail au salarié</h3>
+        <div class="doc-actions">
+          <button class="btn secondary" onclick="copyText('tt-doc-mail', this)">Copier le texte</button>
+          <button class="btn" onclick="downloadSimpleDocx('MAIL — Télétravail à l\'étranger', document.getElementById('tt-doc-mail').value, 'Mail_teletravail_${(tt.state.nomSalarie||'salarie').replace(/\s+/g,'_')}.docx')">Télécharger en .docx</button>
+        </div>
+      </div>
+      <textarea class="output" id="tt-doc-mail" readonly>${tt_buildMail()}</textarea>
+    </div>`;
+}
+
+function tt_buildMail(){
+  const s = tt.state;
+  return `Objet : Votre télétravail depuis ${s.pays || '[pays]'} du ${fmtDate(s.dateDebut)} au ${fmtDate(s.dateFin)}
+
+Bonjour ${s.nomSalarie ? s.nomSalarie.split(' ')[0] : '[Prénom]'},
+
+Ce mail confirme les conditions de votre télétravail depuis ${s.pays || '[pays]'} du ${fmtDate(s.dateDebut)} au ${fmtDate(s.dateFin)}.
+
+Sécurité sociale : ${s.numeroA1 ? `votre certificat n° ${s.numeroA1} atteste de votre maintien au régime français` : 'un certificat de maintien à la Sécurité sociale française est en cours de traitement'} pendant cette période. Conservez ce document avec vous.
+
+Merci de rester joignable aux horaires habituels et de signaler tout imprévu au service RH.
+
+Bonne période de télétravail,
+[Signature RH]`;
+}
+
+function tt_setExecution(v){ tt.state.execution = v; tt.render0(); }
+function tt_setPays(v){ tt.state.pays = v; tt.render1(); }
+function tt_setPart(v){ tt.state.part = v; tt.render1(); }
+function tt_toggleCheck(i){ tt.state.checked[i] = !tt.state.checked[i]; tt.render3(); }
+
+function tt_validate(){
+  const s = tt.state;
+  const items = tt_buildDemarcheItems();
+  const record = {
+    id: s.missionId, module:'Télétravail', dateEnregistrement: new Date().toISOString(),
+    salarie: s.nomSalarie || '(non renseigné)', poste: s.poste, statut: 'salarie',
+    pays: s.pays, client:'', ville:'', dateDebut: s.dateDebut, dateFin: s.dateFin,
+    numeroA1: s.numeroA1, qualification: s.part,
+    demarches: items.map((it,i)=>({ titre: it.title, fait: !!s.checked[i] })),
+    validated: true
+  };
+  addOrUpdateMission(record);
+  s.validated = true;
+  tt.render3();
+  alert('Situation enregistrée dans l\'historique.');
+}
+
+function tt_reset(){
+  tt.state = { step:0, missionId: uid(), execution:null, statut:'salarie', pays:null, part:null,
+    nomSalarie:"", poste:"", dateDebut:"", dateFin:"", numeroA1:"", checked:{}, validated:false };
+  tt.goTo(0);
+}
+
+tt.goTo = function(step){
+  tt.state.step = step;
+  if(step===0) tt.render0();
+  else if(step===1) tt.render1();
+  else if(step===2) tt.render2();
+  else if(step===3) tt.render3();
+};
+
+/* ============================= HISTORIQUE & EXPORT ============================= */
+
+function renderHistorique(){
+  const missions = loadMissions().sort((a,b)=> new Date(b.dateEnregistrement) - new Date(a.dateEnregistrement));
+  let rowsHtml = '';
+  if(missions.length===0){
+    rowsHtml = '';
+  } else {
+    rowsHtml = missions.map(m=>{
+      const nbFait = (m.demarches||[]).filter(d=>d.fait).length;
+      const nbTotal = (m.demarches||[]).length;
+      const chip = nbTotal>0 && nbFait===nbTotal ? `<span class="status-chip done">${nbFait}/${nbTotal} faites</span>` : `<span class="status-chip progress">${nbFait}/${nbTotal} faites</span>`;
+      return `<tr>
+        <td>${new Date(m.dateEnregistrement).toLocaleDateString('fr-FR')}</td>
+        <td><strong>${m.salarie}</strong><br><span style="color:var(--muted);font-size:12px;">${m.poste||''}</span></td>
+        <td>${m.module}</td>
+        <td>${m.pays||'—'}</td>
+        <td>${m.dateDebut ? fmtDate(m.dateDebut)+' → '+fmtDate(m.dateFin) : '—'}</td>
+        <td>${m.qualification||'—'}</td>
+        <td>${chip}</td>
+        <td><button class="row-del" onclick="histo_delete('${m.id}')">Supprimer</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  const tableOrEmpty = missions.length===0
+    ? `<div class="empty-state">Aucune mission enregistrée pour l'instant. Utilisez le bouton « Valider la démarche accomplie » dans les modules Détachement ou Télétravail pour alimenter cet historique.</div>`
+    : `<table class="histo">
+        <thead><tr><th>Enregistré le</th><th>Salarié</th><th>Module</th><th>Pays</th><th>Dates mission</th><th>Qualification</th><th>Avancement</th><th></th></tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>`;
+
+  document.getElementById('appRoot').innerHTML = `<main style="max-width:1100px;">
+    <div class="eyebrow">Historique & export</div>
+    <h2>Suivi des missions et déplacements</h2>
+    <p class="panel-sub">Cet historique est stocké localement dans votre navigateur (aucun serveur) — il est propre à cet ordinateur et à ce navigateur. Pour un suivi partagé entre plusieurs personnes RH, exportez régulièrement en Excel et centralisez le fichier sur votre espace partagé habituel.</p>
+    <div class="card">
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn" onclick="exportHistoriqueExcel()">Exporter en Excel (.xlsx)</button>
+        <button class="btn secondary" onclick="histo_clearAll()">Vider l'historique</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0; overflow-x:auto;">${tableOrEmpty}</div>
+    <footer class="appfoot">L'export Excel reprend, pour chaque mission validée, le détail des démarches et leur statut (fait / à faire), pour une traçabilité complète par salarié.</footer>
+  </main>`;
+}
+
+function histo_delete(id){
+  if(confirm('Supprimer cette entrée de l\'historique ?')){
+    deleteMission(id);
+    renderHistorique();
+  }
+}
+
+function histo_clearAll(){
+  if(confirm('Vider tout l\'historique local ? Cette action est irréversible.')){
+    saveMissions([]);
+    renderHistorique();
+  }
+}
+
+function exportHistoriqueExcel(){
+  if(!window.XLSX){
+    alert("La librairie d'export Excel n'a pas pu se charger (connexion internet nécessaire au premier chargement de la page).");
+    return;
+  }
+  const missions = loadMissions();
+  if(missions.length===0){ alert('Aucune mission à exporter.'); return; }
+
+  const summaryRows = missions.map(m=>({
+    "Date d'enregistrement": new Date(m.dateEnregistrement).toLocaleDateString('fr-FR'),
+    "Salarié": m.salarie, "Poste": m.poste||'', "Statut": m.statut||'',
+    "Module": m.module, "Pays": m.pays||'', "Client/congrès": m.client||'', "Ville": m.ville||'',
+    "Date début": m.dateDebut ? fmtDate(m.dateDebut) : '', "Date fin": m.dateFin ? fmtDate(m.dateFin) : '',
+    "Qualification": m.qualification||'', "N° certificat": m.numeroA1||'',
+    "Démarches faites": (m.demarches||[]).filter(d=>d.fait).length,
+    "Démarches totales": (m.demarches||[]).length,
+    "Validé": m.validated ? 'Oui' : 'Non',
+  }));
+
+  const detailRows = [];
+  missions.forEach(m=>{
+    (m.demarches||[]).forEach(d=>{
+      detailRows.push({
+        "Salarié": m.salarie, "Module": m.module, "Pays": m.pays||'',
+        "Démarche": d.titre, "Statut": d.fait ? 'Fait' : 'À faire',
+        "Date d'enregistrement": new Date(m.dateEnregistrement).toLocaleDateString('fr-FR')
+      });
+    });
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws1 = XLSX.utils.json_to_sheet(summaryRows);
+  const ws2 = XLSX.utils.json_to_sheet(detailRows);
+  XLSX.utils.book_append_sheet(wb, ws1, "Missions");
+  XLSX.utils.book_append_sheet(wb, ws2, "Démarches (détail)");
+  XLSX.writeFile(wb, `Suivi_detachement_teletravail_CYIM_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+/* ============================= DOCUMENTATION ============================= */
+
+function renderDocumentation(){
+  const entries = [
+    ["Qu'est-ce que le détachement ?", `<p>Le détachement désigne la situation dans laquelle un employeur envoie temporairement un salarié exécuter une prestation de travail dans un autre pays, tout en maintenant le contrat de travail d'origine et, en principe, le rattachement à la sécurité sociale du pays de départ.</p>
+      <p><strong>Deux cadres juridiques distincts :</strong> la sécurité sociale (règlement européen 883/2004, certificat A1) et le droit du travail (directive 96/71/CE modifiée par la directive 2018/957, qui impose un socle de règles impératives du pays d'accueil pendant la mission).</p>
+      <p><strong>Durée :</strong> le détachement est temporaire (jusqu'à 24 mois au sein de l'UE via le certificat A1). Au-delà, on parle d'expatriation : bascule vers le régime social local ou la Caisse des Français de l'Étranger (CFE).</p>`],
+    ["Pourquoi le montage/démontage n'est jamais dispensé", `<p>L'arrêté du 4 juin 2019 dispense de déclaration certaines catégories (artistes jusqu'à 90 jours/12 mois, colloques et manifestations scientifiques jusqu'à 12 mois), mais exclut explicitement « les activités de montage ou de démontage d'équipements ou d'installations provisoires, de restauration, de transport, de surveillance et de sécurité des sites dédiés aux manifestations ».</p>
+      <p>Concrètement : un intervenant ou un conférencier peut être dispensé de déclaration, mais l'équipe technique qui monte et exploite le dispositif audiovisuel ne l'est jamais.</p>`],
+    ["Le certificat A1 : validité et renouvellement", `<p>Le certificat A1 correspond aux dates précises de la mission déclarée, dans la limite de 24 mois. Il ne couvre pas automatiquement les missions suivantes : une nouvelle mission nécessite en principe une nouvelle demande, même pour un déplacement très court (48h suffisent à déclencher l'obligation).</p>
+      <p><strong>Pour les déplacements récurrents</strong> (commerciaux notamment), l'Urssaf recommande de basculer vers le statut de pluriactivité plutôt que de multiplier les déclarations de détachement à chaque voyage.</p>
+      <p><strong>Certificat de mobilité internationale</strong> est le terme générique de l'Urssaf recouvrant trois documents différents : le certificat A1 (UE/EEE/Suisse/UK), le certificat bilatéral (41 pays à accord), et le certificat de maintien à la Sécurité sociale française (autres pays).</p>`],
+    ["La déclaration préalable dans le pays d'accueil", `<p>Chaque pays de l'UE/EEE/Suisse a son propre système de déclaration préalable (l'équivalent du SIPSI français, qui lui ne concerne que les entreprises étrangères envoyant des salariés vers la France). Il n'existe pas de guichet unique européen à ce jour.</p>
+      <p>Le module Détachement de cet outil ouvre automatiquement le bon portail selon le pays choisi.</p>`],
+    ["Le « noyau dur » du droit du travail local", `<p>Dès qu'un salarié est détaché, l'article 3 de la directive 96/71/CE impose de respecter, pendant la mission, un socle de règles impératives du pays d'accueil : salaire minimal local, durée maximale du travail et repos, congés payés minimaux, santé et sécurité au travail.</p>
+      <p>C'est une obligation distincte de la déclaration préalable : l'une ne couvre pas l'autre.</p>`],
+    ["L'attestation de détachement CYIM", `<p>Document interne, rédigé et signé par l'employeur (CYIM), qui formalise la mission — à distinguer du certificat A1, délivré par l'Urssaf et qui ne concerne que la sécurité sociale.</p>
+      <p>Le module Détachement génère ce document pré-rempli à partir des informations saisies (Étape 4).</p>`],
+    ["Contrat de travail et bulletin de paie : pourquoi les emporter", `<p>Ils permettent aux autorités du pays d'accueil de vérifier que le salarié a une relation de travail réelle et préexistante avec CYIM, et que les cotisations sociales françaises sont effectivement payées.</p>
+      <p><strong>Risque en cas d'absence de ces documents lors d'un contrôle :</strong> la présomption de détachement régulier peut être remise en cause, avec un risque de rappel de cotisations locales, d'amende, et de complications pour le salarié sur place.</p>`],
+    ["Assurance voyage professionnelle", `<p>Distincte de l'assurance santé habituelle : elle couvre les frais médicaux à l'étranger, l'assistance et le rapatriement, la responsabilité civile professionnelle et parfois le matériel transporté.</p>
+      <p>Un contrat annuel « multi-voyages » couvre en général tous les déplacements de l'année sans démarche à chaque départ. Une attestation ponctuelle reste parfois nécessaire pour un pays ou un client exigeant un justificatif nominatif.</p>`],
+    ["Rapatriement", `<p>Deux logiques différentes : le <strong>rapatriement sanitaire</strong> (maladie, accident), couvert par l'assurance voyage, et le <strong>rapatriement sécuritaire</strong> (crise politique, catastrophe), qui relève de la vigilance de l'employeur — inscription sur le portail Ariane (diplomatie.gouv.fr) recommandée pour les destinations sensibles.</p>`],
+    ["Détachement ou télétravail : comment choisir le bon module", `<p>La question clé : le salarié va-t-il exécuter une prestation pour un client sur place (montage, installation, formation) ? Si oui, c'est un détachement. Si le salarié travaille uniquement à distance pour CYIM, sans client local, c'est du télétravail.</p>
+      <p>Chaque module de cet outil propose un bouton pour basculer vers l'autre si la réponse initiale s'avère incorrecte.</p>`],
+    ["Intermittents et auto-entrepreneurs (module Détachement uniquement)", `<p><strong>Intermittents (CDDU) :</strong> mêmes règles qu'un salarié permanent ; CYIM (RH) fait la demande de certificat A1.</p>
+      <p><strong>Auto-entrepreneurs :</strong> pas de lien de subordination, donc pas de « détachement » au sens strict — mais l'auto-entrepreneur doit obtenir son propre certificat A1 en tant que travailleur indépendant. CYIM doit vérifier l'existence de ce document avant la mission (devoir de vigilance).</p>
+      <p>Ces deux statuts ne concernent que le module Détachement (missions congrès) : le télétravail ne s'applique qu'aux salariés de CYIM.</p>`],
+    ["Visa ou permis de travail : quelle différence ?", `<p>Ce sont deux autorisations différentes, parfois fusionnées en un seul document selon les pays :</p>
+      <p><strong>Le visa</strong> autorise l'entrée sur le territoire (touristique, affaires, etc.). Un visa d'affaires ou une dispense de visa pour un court séjour couvre en général les réunions et négociations, mais pas l'exécution d'un travail technique.</p>
+      <p><strong>Le permis (ou autorisation) de travail</strong> autorise l'exercice d'une activité rémunérée sur place. C'est une démarche distincte, souvent plus longue, à instruire séparément — parfois auprès d'un ministère du Travail local, parfois directement au consulat.</p>
+      <p><strong>Exemple concret (Turquie) :</strong> un technicien qui monte un stand ou un dispositif audiovisuel a besoin d'un « visa montage » spécifique, distinct du simple visa touristique. La démarche se fait en personne au Consulat général de Turquie, avec une lettre de l'entreprise turque, une autorisation ministérielle préalable (4 à 6 semaines) et un coût de 60 à 180 €. Il ne peut être demandé qu'une fois par an, pour 90 jours maximum.</p>
+      <p>Dans l'outil, la démarche « Immigration : visa et/ou permis de travail » renvoie vers les conseils aux voyageurs officiels (France Diplomatie) pour le pays choisi ; ce lien couvre l'entrée et donne un premier niveau d'information, mais la démarche de permis de travail proprement dite, quand elle existe, doit être confirmée et engagée auprès du consulat ou de l'autorité locale compétente.</p>`],
+    ["Stockage sécurisé des documents des salariés", `<p>Cet outil ne stocke aucun document (passeport, contrat, etc.) : ce serait un risque de sécurité, un site sans serveur ne peut pas garantir une confidentialité réelle par salarié.</p>
+      <p><strong>Piste à envisager :</strong> un espace que CYIM contrôle déjà (SharePoint ou OneDrive), avec des permissions restreintes par salarié, où l'authentification serait gérée par Microsoft et non par cet outil. Ce sujet reste à instruire séparément avant toute mise en place.</p>`],
+  ];
+  const html = entries.map(([title,body])=>`<details class="doc-entry"><summary>${title}</summary><div class="doc-body">${body}</div></details>`).join('');
+
+  document.getElementById('appRoot').innerHTML = `<main style="max-width:820px;">
+    <div class="eyebrow">Documentation</div>
+    <h2>Comprendre le détachement et le télétravail</h2>
+    <p class="panel-sub">Rappels issus des notes de synthèse CYIM. Cliquez sur une question pour la déplier.</p>
+    ${html}
+    <footer class="appfoot">Pour le détail juridique complet, les modèles et la cartographie exhaustive par pays, se référer aux notes de synthèse « Détachement du personnel à l'étranger » et « Télétravail hors France ».</footer>
+  </main>`;
+}
+
+/* ============================= DÉMARRAGE ============================= */
+
+renderTabNav();
+switchTab('detachement');
+</script>
+</body>
+</html>
